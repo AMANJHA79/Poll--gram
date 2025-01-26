@@ -4,7 +4,7 @@ const connectToDB = require('./config/db');
 // const corsMiddleware = require('./middleware/corsConfig'); 
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
-// const userRoutes = require("./routes/userRoutes");
+const userRoutes = require("./routes/userRoutes");
 // const postRoutes = require("./routes/postRoutes");
 // const storyRoutes = require("./routes/storyRoutes");
 // const commentRoutes = require("./routes/commentRoutes");
@@ -27,10 +27,11 @@ app.use(useragent.express());
 // Routes
 
 app.use("/api/v1/auth", authRoutes); // Authentication routes
-
-
-
 // app.use("/api/v1/users", userRoutes); // User profile routes
+
+
+
+
 // app.use("/api/v1/posts", postRoutes); // Post routes
 // app.use("/api/v1/stories", storyRoutes); // Story routes
 // app.use("/api/v1/comments", commentRoutes); // Comment routes
