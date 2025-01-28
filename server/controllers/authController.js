@@ -34,10 +34,11 @@ const signup = async (req,res)=>{
             email,
             password: hashedPassword,
             verificationToken,
-            verificationTokenExpireAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+            verificationTokenExpireAt: Date.now() + 10 * 60 * 1000,
+            role: 'user'
         });
 
-        generateTokenAndSetCookie(res, newUser._id);
+        generateTokenAndSetCookie(res, newUser._id, newUser.role);
 
         // Send verification email
         const mailOptions = {
@@ -145,7 +146,7 @@ const login = async (req, res) => {
         await sendLoginAlert(user, deviceInfo);
 
         // Generate token and send response
-        generateTokenAndSetCookie(res, user._id);
+        generateTokenAndSetCookie(res, user._id, user.role);
 
         res.status(200).json({
             success: true,
@@ -153,7 +154,8 @@ const login = async (req, res) => {
             user: {
                 username: user.username,
                 email: user.email,
-                _id: user._id
+                _id: user._id,
+                role: user.role
             }
         });
 
@@ -307,9 +309,60 @@ const resetPassword = async (req,res)=>{
 
 }
 
+const createAdmin = async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        if (!username || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide all fields'
+            });
+        }
 
+        const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'User already exists'
+            });
+        }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newAdmin = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+            role: 'admin',
+            isVerified: true // Automatically verify admin accounts
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Admin created successfully',
+            user: {
+                username: newAdmin.username,
+                email: newAdmin.email,
+                _id: newAdmin._id,
+                role: newAdmin.role
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error in createAdmin controller',
+            error: error.message
+        });
+    }
+}
 
 module.exports = {
-    signup , login ,logout , verifyEmail , forgotPassword , resetPassword
+    signup, 
+    login,
+    logout, 
+    verifyEmail, 
+    forgotPassword, 
+    resetPassword, 
+    createAdmin
 }

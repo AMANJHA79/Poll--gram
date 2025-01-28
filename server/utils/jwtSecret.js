@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 // Function to generate a JWT token and set it as a secure HTTP-only cookie
-const generateTokenAndSetCookie = (res, userId) => {
+const generateTokenAndSetCookie = (res, userId, role) => {
     // Verify JWT secret is configured
     if (!process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET is not defined');
@@ -10,8 +10,8 @@ const generateTokenAndSetCookie = (res, userId) => {
 
     let token;
     try {
-        // Generate JWT token with 7-day expiration
-        token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        // Generate JWT token with 7-day expiration and include role
+        token = jwt.sign({ userId, role }, process.env.JWT_SECRET, { expiresIn: '7d' });
     } catch (error) {
         console.error('Error signing token:', error);
         throw new Error('Token generation failed');

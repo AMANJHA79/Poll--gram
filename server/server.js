@@ -27,7 +27,7 @@ app.use(useragent.express());
 // Routes
 
 app.use("/api/v1/auth", authRoutes); // Authentication routes
-// app.use("/api/v1/users", userRoutes); // User profile routes
+app.use("/api/v1/users", userRoutes); // User profile routes
 
 
 
