@@ -5,9 +5,23 @@ const Post = require("../models/Post");
 
 // Get all users (admin only)
 const getAllUsers = async (req, res) => {
-  res.send("Get all users");
-  
-  
+  try {
+    const users = await User.find({ 
+      _id: { $ne: req.user._id }, 
+      role: { $ne: "admin" } // Exclude admin users
+    });
+    res.status(200).send({
+      success: true,
+      users
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false,
+      error: "error while fetching All users" 
+    });
+  }
 };
 
 
