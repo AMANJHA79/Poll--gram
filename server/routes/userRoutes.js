@@ -19,10 +19,10 @@ const router = express.Router();
 router.get("/", authMiddleware, adminMiddleware, getAllUsers);
 
 // Get a specific user's profile
-router.get("/:userId", authMiddleware, getUserProfile);
+router.get("/profile", authMiddleware, getUserProfile);
 
 // Update a user's profile
-router.put("/:userId", authMiddleware, updateUserProfile);
+router.put("/profile", authMiddleware, updateUserProfile);
 
 // Delete a user (admin only)
 router.delete("/:userId", authMiddleware, adminMiddleware, deleteUser);
